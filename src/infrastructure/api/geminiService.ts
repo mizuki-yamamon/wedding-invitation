@@ -2,7 +2,13 @@ import { GoogleGenAI } from '@google/genai'
 import type { Language } from '@/domain/types/wedding'
 
 const apiKey = (process.env.GEMINI_API_KEY as string) || ''
-const ai = new GoogleGenAI({ apiKey })
+
+let ai: GoogleGenAI | null = null
+function getClient(): GoogleGenAI | null {
+  if (!apiKey) return null
+  if (!ai) ai = new GoogleGenAI({ apiKey })
+  return ai
+}
 
 const SYSTEM_INSTRUCTIONS: Record<Language, string> = {
   jp: 'あなたは結婚式のゲスト用AIアシスタントです。非常に丁寧で上品な日本語を使ってください。ゲストからの質問（服装、マナー、お祝いの言葉の作成など）に答えてください。',
@@ -34,7 +40,10 @@ export async function generateWeddingResponse(
   }
 
   try {
-    const response = await ai.models.generateContent({
+    const client = getClient()
+    if (!client) return ERROR_MESSAGES[language].noKey
+
+    const response = await client.models.generateContent({
       model: 'gemini-2.0-flash',
       contents: prompt,
       config: {
