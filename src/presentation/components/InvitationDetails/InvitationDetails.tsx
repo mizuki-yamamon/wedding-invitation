@@ -4,10 +4,10 @@ import { CONTENT } from '@/domain/constants/content'
 interface InvitationDetailsProps {
   language: Language
   isVisible: boolean
-  onOpenAssistant: () => void
+  onOpenRsvp: () => void
 }
 
-export function InvitationDetails({ language, isVisible, onOpenAssistant }: InvitationDetailsProps) {
+export function InvitationDetails({ language, isVisible, onOpenRsvp }: InvitationDetailsProps) {
   const content = CONTENT[language]
 
   if (!isVisible) return null
@@ -64,18 +64,15 @@ export function InvitationDetails({ language, isVisible, onOpenAssistant }: Invi
           {content.messageBody}
         </p>
 
-        {/* Actions */}
-        <div className="pt-8 space-y-4">
-          <button className="w-full bg-gray-900 text-white py-4 px-8 tracking-widest uppercase hover:bg-gray-800 transition-colors shadow-lg font-cinzel text-xs md:text-sm">
-            {content.rsvpButton}
-          </button>
-
+        {/* RSVP Button */}
+        <div className="pt-8">
           <button
-            onClick={onOpenAssistant}
-            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-wedding-gold-light to-white border border-wedding-gold/30 py-3 px-8 text-wedding-gold hover:text-yellow-700 transition-all font-serif italic shadow-sm hover:shadow-md rounded-sm"
+            onClick={onOpenRsvp}
+            className={`w-full bg-gray-900 text-white py-4 px-8 tracking-widest uppercase hover:bg-gray-800 transition-colors shadow-lg text-xs md:text-sm ${
+              language === 'jp' ? 'font-jp' : 'font-cinzel'
+            }`}
           >
-            <span>✨</span>
-            <span>{content.aiAssistantTitle}</span>
+            {content.rsvpButton}
           </button>
         </div>
       </div>

@@ -1,15 +1,30 @@
 import { useState } from 'react'
 import { useLanguage } from '@/application/hooks/useLanguage'
 import { useEnvelope } from '@/application/hooks/useEnvelope'
+import { useRsvp } from '@/application/hooks/useRsvp'
 import { LanguageToggle } from '@/presentation/components/LanguageToggle/LanguageToggle'
 import { Envelope } from '@/presentation/components/Envelope/Envelope'
 import { InvitationDetails } from '@/presentation/components/InvitationDetails/InvitationDetails'
-import { WeddingAssistant } from '@/presentation/components/WeddingAssistant/WeddingAssistant'
+import { RsvpForm } from '@/presentation/components/RsvpForm/RsvpForm'
+import { RsvpThankYou } from '@/presentation/components/RsvpThankYou/RsvpThankYou'
+
+type Phase = 'envelope' | 'invitation' | 'rsvp' | 'thankYou'
 
 export function WeddingPage() {
   const { language, setLanguage } = useLanguage()
   const { isOpened, open } = useEnvelope()
-  const [showAssistant, setShowAssistant] = useState(false)
+  const { formData, isSubmitted, updateField, submit, reset } = useRsvp()
+  const [phase, setPhase] = useState<Phase>('envelope')
+
+  const handleEnvelopeOpen = () => {
+    open()
+    setPhase('invitation')
+  }
+
+  const handleBackToInvitation = () => {
+    reset()
+    setPhase('invitation')
+  }
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-wedding-cream relative overflow-hidden transition-colors duration-1000">
@@ -19,20 +34,43 @@ export function WeddingPage() {
 
       <LanguageToggle currentLang={language} onToggle={setLanguage} />
 
-      <main className="z-10 w-full px-4 flex flex-col items-center">
-        {/* Phase 1: The Envelope */}
-        {!isOpened && (
+      <main className="z-10 w-full px-4 flex flex-col items-center py-12">
+        {/* Phase 1: Envelope */}
+        {!isOpened && phase === 'envelope' && (
           <div className="animate-fade-in-up">
-            <Envelope language={language} onOpenComplete={open} />
+            <Envelope language={language} onOpenComplete={handleEnvelopeOpen} />
           </div>
         )}
 
-        {/* Phase 2: The Card Content */}
-        {isOpened && (
+        {/* Phase 2: Invitation Details */}
+        {phase === 'invitation' && (
           <InvitationDetails
             language={language}
-            isVisible={isOpened}
-            onOpenAssistant={() => setShowAssistant(true)}
+            isVisible
+            onOpenRsvp={() => setPhase('rsvp')}
+          />
+        )}
+
+        {/* Phase 3: RSVP Form */}
+        {phase === 'rsvp' && !isSubmitted && (
+          <RsvpForm
+            language={language}
+            formData={formData}
+            onUpdateField={updateField}
+            onSubmit={() => {
+              submit()
+              setPhase('thankYou')
+            }}
+            onBack={handleBackToInvitation}
+          />
+        )}
+
+        {/* Phase 4: Thank You */}
+        {phase === 'thankYou' && isSubmitted && (
+          <RsvpThankYou
+            language={language}
+            attendance={formData.attendance}
+            onBackToInvitation={handleBackToInvitation}
           />
         )}
       </main>
@@ -41,13 +79,6 @@ export function WeddingPage() {
       <footer className="absolute bottom-4 text-gray-300 text-[10px] tracking-widest font-cinzel">
         © 2024 Olivia & James Wedding
       </footer>
-
-      {/* Assistant Modal */}
-      <WeddingAssistant
-        isOpen={showAssistant}
-        onClose={() => setShowAssistant(false)}
-        language={language}
-      />
     </div>
   )
 }
