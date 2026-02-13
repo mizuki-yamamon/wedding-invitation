@@ -6,6 +6,7 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, '.', '')
   return {
+    base: '/wedding-invitation/',
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
