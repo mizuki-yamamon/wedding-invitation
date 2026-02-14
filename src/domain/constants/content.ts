@@ -1,9 +1,14 @@
 import type { ContentText, Language, RsvpContent } from '@/domain/types/wedding'
 
+const groomEn = import.meta.env.VITE_GROOM_NAME_EN || 'James'
+const brideEn = import.meta.env.VITE_BRIDE_NAME_EN || 'Olivia'
+const groomJp = import.meta.env.VITE_GROOM_NAME_JP || '新郎'
+const brideJp = import.meta.env.VITE_BRIDE_NAME_JP || '新婦'
+
 export const CONTENT: Record<Language, ContentText> = {
   en: {
     tapToOpen: 'Tap to Open',
-    names: 'Olivia & James',
+    names: `${brideEn} & ${groomEn}`,
     date: 'October 24, 2024',
     location: "St. Patrick's Cathedral, New York",
     messageTitle: 'You are invited',
@@ -13,7 +18,7 @@ export const CONTENT: Record<Language, ContentText> = {
   },
   jp: {
     tapToOpen: 'タップして開封',
-    names: '佐藤 健太 & 高橋 美咲',
+    names: `${groomJp} & ${brideJp}`,
     date: '2024年10月24日',
     location: 'グランドハイアット東京',
     messageTitle: '結婚式のご案内',

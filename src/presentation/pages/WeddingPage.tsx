@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { CONTENT } from '@/domain/constants/content'
 import { useLanguage } from '@/application/hooks/useLanguage'
 import { useEnvelope } from '@/application/hooks/useEnvelope'
 import { useRsvp } from '@/application/hooks/useRsvp'
@@ -77,7 +78,7 @@ export function WeddingPage() {
 
       {/* Footer */}
       <footer className="absolute bottom-4 text-gray-300 text-[10px] tracking-widest font-cinzel">
-        © 2024 Olivia & James Wedding
+        © 2024 {CONTENT.en.names} Wedding
       </footer>
     </div>
   )

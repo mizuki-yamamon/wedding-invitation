@@ -30,9 +30,20 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - run: pnpm build
+      - name: Apply repository variable overrides
+        run: |
+          touch .env.local
+          [ -n "$GROOM_EN" ] && echo "VITE_GROOM_NAME_EN=$GROOM_EN" >> .env.local || true
+          [ -n "$BRIDE_EN" ] && echo "VITE_BRIDE_NAME_EN=$BRIDE_EN" >> .env.local || true
+          [ -n "$GROOM_JP" ] && echo "VITE_GROOM_NAME_JP=$GROOM_JP" >> .env.local || true
+          [ -n "$BRIDE_JP" ] && echo "VITE_BRIDE_NAME_JP=$BRIDE_JP" >> .env.local || true
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROOM_EN: ${{ vars.VITE_GROOM_NAME_EN }}
+          BRIDE_EN: ${{ vars.VITE_BRIDE_NAME_EN }}
+          GROOM_JP: ${{ vars.VITE_GROOM_NAME_JP }}
+          BRIDE_JP: ${{ vars.VITE_BRIDE_NAME_JP }}
+
+      - run: pnpm build
 
       - uses: actions/configure-pages@v5
 
